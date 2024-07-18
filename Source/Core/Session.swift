@@ -170,7 +170,8 @@ open class Session {
     ///                               `nil` by default.
     ///   - eventMonitors:            Additional `EventMonitor`s used by the instance. Alamofire always adds a
     ///                               `AlamofireNotifications` `EventMonitor` to the array passed here. `[]` by default.
-    public convenience init(configuration: URLSessionConfiguration = URLSessionConfiguration.af.default,
+    public convenience init(configuration: URLSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "alamofire.background.support")
+                            ,
                             delegate: SessionDelegate = SessionDelegate(),
                             rootQueue: DispatchQueue = DispatchQueue(label: "org.alamofire.session.rootQueue"),
                             startRequestsImmediately: Bool = true,
@@ -181,12 +182,17 @@ open class Session {
                             redirectHandler: RedirectHandler? = nil,
                             cachedResponseHandler: CachedResponseHandler? = nil,
                             eventMonitors: [EventMonitor] = []) {
-        precondition(configuration.identifier == nil, "Alamofire does not support background URLSessionConfigurations.")
+//        precondition(configuration.identifier == nil, "Alamofire does not support background URLSessionConfigurations.")
 
         // Retarget the incoming rootQueue for safety, unless it's the main queue, which we know is safe.
         let serialRootQueue = (rootQueue === DispatchQueue.main) ? rootQueue : DispatchQueue(label: rootQueue.label,
                                                                                              target: rootQueue)
         let delegateQueue = OperationQueue(maxConcurrentOperationCount: 1, underlyingQueue: serialRootQueue, name: "\(serialRootQueue.label).sessionDelegate")
+
+        configuration.sessionSendsLaunchEvents = true
+        configuration.shouldUseExtendedBackgroundIdleMode = true
+        configuration.allowsCellularAccess = true
+        
         let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
 
         self.init(session: session,
