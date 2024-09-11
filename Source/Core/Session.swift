@@ -116,10 +116,10 @@ open class Session {
                 redirectHandler: RedirectHandler? = nil,
                 cachedResponseHandler: CachedResponseHandler? = nil,
                 eventMonitors: [EventMonitor] = []) {
-        precondition(session.configuration.identifier == nil,
-                     "Alamofire does not support background URLSessionConfigurations.")
-        precondition(session.delegateQueue.underlyingQueue === rootQueue,
-                     "Session(session:) initializer must be passed the DispatchQueue used as the delegateQueue's underlyingQueue as rootQueue.")
+//        precondition(session.configuration.identifier == nil,
+//                     "Alamofire does not support background URLSessionConfigurations.")
+//        precondition(session.delegateQueue.underlyingQueue === rootQueue,
+//                     "Session(session:) initializer must be passed the DispatchQueue used as the delegateQueue's underlyingQueue as rootQueue.")
 
         self.session = session
         self.delegate = delegate
